@@ -1,0 +1,112 @@
+  @State var currentQuestion: Int = 0
+    @State var showCAlert: Bool = false
+    @State var showWAlert: Bool = false
+    
+    @State var showResultSheet: Bool = false
+    
+    
+    func correctAnwer(option: Int){
+        let correctAnswer = questions[currentQuestion].options[questions[currentQuestion].correct-1]
+        
+        let selectedOption = questions[currentQuestion].options[option]
+        
+        if correctAnswer == selectedOption {
+            showCAlert = true
+        } else {
+            showWAlert = true
+        }
+    }
+    
+    var body: some View {
+
+        ZStack{
+            Color.green
+                .ignoresSafeArea()
+            
+            VStack{
+                
+                Text("Quiz App")
+                    .font(.system(size: 60))
+                
+                Text(questions[currentQuestion].title)
+                    .padding()
+                    .multilineTextAlignment(.center)
+                    .font(.title2)
+                
+                VStack{
+                    HStack{ // row 1
+                        Button { // option1
+                            correctAnwer(option: 0)
+                        } label: {
+                            OptionButton(text: questions[currentQuestion].options[0], bgColor: .black, fgColor: .white)
+                        }
+                        Button { // option2
+                            correctAnwer(option: 1)
+                        } label: {
+                            OptionButton(text: questions[currentQuestion].options[1], bgColor: .black, fgColor: .orange)
+                        }
+
+                    }
+                    HStack { // row 2
+                        Button { // option3
+                            correctAnwer(option: 2)
+                        } label: {
+                            OptionButton(text: questions[currentQuestion].options[2], bgColor: .black, fgColor: .red)
+                        }
+                        Button { // option4
+                            correctAnwer(option: 3)
+                        } label: {
+                            OptionButton(text: questions[currentQuestion].options[3], bgColor: .black, fgColor: .white)
+                        }
+                    }
+                }
+            }
+            .foregroundColor(.white)
+        }
+        
+        // correct alert
+        .alert("Quiz App", isPresented: $showCAlert) {
+            Button {
+                if currentQuestion < questions.count - 1 {
+                    currentQuestion += 1
+                } else { // arrive to end of the questions
+                    showResultSheet = true
+                }
+            } label: {
+                Text("Ok")
+            }
+        } message: {
+            Text("Well done, your answer is correct")
+        }
+        
+        // wrong alert
+        .alert("Quiz App", isPresented: $showWAlert) {
+            Button {
+                if currentQuestion < questions.count - 1 {
+                    currentQuestion += 1
+                } else {
+                    showResultSheet = true
+                }
+            } label: {
+                Text("Ok")
+            }
+        } message: {
+            Text("Your answer is wrong. Sorry")
+        }
+        
+        .sheet(isPresented: $showResultSheet) {
+            // ondismiss action
+            
+        } content: {
+            // view
+            Text("Your Result")
+                .font(.title)
+            Text("You got:")
+                .font(.title3)
+            Text("0 / 5")
+        }
+
+        
+    }
+    
+    
